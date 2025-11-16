@@ -1,0 +1,40 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Build with MSBuild",
+            "type": "shell",
+            "command": "msbuild.exe",
+            "args": [
+                "ChaseTheBug.csproj"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "problemMatcher": "$msCompile",
+            "detail": "Build the project using MSBuild",
+
+        },
+        {
+            "label": "Copy DLL",
+            "type": "shell",
+            "command": "xcopy",
+            "args": [
+                // Replace these paths with your actual build output and destination paths
+                "${workspaceFolder}\\bin\\Debug\\ChaseTheBug.dll",
+                "z:\\bin\\CSpect3_0_2_1\\",
+                "/Y" // Overwrite without prompting
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            },
+            "problemMatcher": [],
+            "dependsOn": [
+                "Build with MSBuild"
+            ]
+        }
+
+    ]
+}
