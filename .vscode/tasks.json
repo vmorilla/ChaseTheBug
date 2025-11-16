@@ -23,7 +23,7 @@
             "args": [
                 // Replace these paths with your actual build output and destination paths
                 "${workspaceFolder}\\bin\\Debug\\ChaseTheBug.dll",
-                "z:\\bin\\CSpect3_0_2_1\\",
+                "z:\\bin\\CSpect3_0_15_2\\",
                 "/Y" // Overwrite without prompting
             ],
             "group": {
