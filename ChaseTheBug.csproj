@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="ChaseTheBugPlugin.cs" />
     <Compile Include="CSpectExtensions.cs" />
+    <Compile Include="Z88dkMapFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
