@@ -32,7 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Plugin">
-      <HintPath>Z:\bin\CSpect3_0_2_1\Plugin.dll</HintPath>
+      <HintPath>Z:\bin\CSpect3_0_15_2\Plugin.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -46,6 +46,7 @@
   <ItemGroup>
     <Compile Include="ChaseTheBugPlugin.cs" />
     <Compile Include="CSpectExtensions.cs" />
+    <Compile Include="Z88dkMapFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
