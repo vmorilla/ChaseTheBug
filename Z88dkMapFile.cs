@@ -93,7 +93,9 @@ namespace ChaseTheBug
 
             // Regex pattern to match: symbol_name = $address ; addr, public, xxx , section, segment, source:line
             // Example: _frame_counter = $ADFA ; addr, public, xxx , ula_interrupt_asm, data_user, ula_interrupt.asm:28
-            var regex = new Regex(@"^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=\s*\$([0-9A-Fa-f]+)\s*;\s*[^,]+,\s*[^,]+,\s*[^,]+,\s*[^,]+,\s*(\w+)\s*,\s*(.+)$", RegexOptions.Compiled);
+            // __data_user_head                = $B27E ; const, public, def, , ,
+
+            var regex = new Regex(@"^\s*([\S]*)\s*=\s*\$([0-9A-Fa-f]+)\s*;\s*[^,]*,\s*[^,]*,\s*[^,]*,\s*[^,]*,\s*(\w*)\s*,\s*(.*)$", RegexOptions.Compiled);
 
             foreach (var line in File.ReadLines(filePath))
             {
@@ -102,11 +104,7 @@ namespace ChaseTheBug
                 {
                     string name = match.Groups[1].Value;
                     string addrStr = match.Groups[2].Value;
-                    int address = Convert.ToInt32(addrStr, 16);
-                    if (addrStr.Length < 6)
-                        address = nextMem.GetPhysicalAddress(address);
-        
-                    // Segments in lowercase to facilitate the configuration of data prefixes and sufixes
+                    int address = addrStr.Length > 7 ? -1 : Convert.ToInt32(addrStr, 16);
                     string segment = match.Groups[3].Value.ToLower();
                     string source = match.Groups[4].Value.Trim();
 
@@ -122,6 +120,11 @@ namespace ChaseTheBug
                         mapFile.symbolsByAddress[address] = new List<Symbol>();
                     }
                     mapFile.symbolsByAddress[address].Add(symbol);
+                }
+                else
+                {
+                    // Could not parse line
+                    Console.WriteLine($"[Z88dkMapFile] Warning: Could not parse line: {line}");
                 }
             }
 
