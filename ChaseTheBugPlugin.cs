@@ -44,6 +44,8 @@ namespace ChaseTheBug
 
         private bool disabled = false;
 
+        private List<TraceRange> additionalTraceRanges = new List<TraceRange>();
+
         public List<sIO> Init(iCSpect c)
         {
             cspect = c;
@@ -63,23 +65,27 @@ namespace ChaseTheBug
             // Watch MMU1 register for writes
             sIOs.Add(new sIO(0x51, eAccess.NextReg_Write));
 
-            for (ushort address = 0x000; address < 0x4000; address++)
-            {
-                sIOs.Add(new sIO(address, eAccess.Memory_Write));
-            }
+            additionalTraceRanges.Add(new TraceRange(0x0000, 0x4000));
 
             var dataUserHead = symbolMap.GetSymbolByName("__data_crt_head");
             if (dataUserHead != null)
             {
                 Log($"Data head at 0x{dataUserHead.Address:X4}");
-                for (ushort address = 0x8000; address < dataUserHead.Address; address++)
-                {
-                    sIOs.Add(new sIO(address, eAccess.Memory_Write));
-                }
+                additionalTraceRanges.Add(new TraceRange(0x8000, (ushort)dataUserHead.Address));
             }
             else
             {
                 Log("Warning: __data_user_head symbol not found in map file. Skipping upper memory watch setup.");
+            }
+
+            foreach (var range in additionalTraceRanges)
+            {
+                Log("Trace range: " + range);
+
+                for (ushort address = range.TraceStart; address < range.TraceEnd; address++)
+                {
+                    sIOs.Add(new sIO(address, eAccess.Memory_Write));
+                }
             }
 
             // Add key press 
@@ -160,6 +166,19 @@ namespace ChaseTheBug
                 {
                     disabled = true;
                     return;
+                }
+
+                if (line.StartsWith("AddRange="))
+                {
+                    var config = line.Substring("AddRange=".Length);
+                    var parts = config.Split(new char[] { '-', ',', ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+                    if (parts.Length == 2)
+                    {
+                        ushort start = (ushort)ParseIntWithHexSupport(parts[0]);
+                        ushort end = (ushort)ParseIntWithHexSupport(parts[1]);
+                        var range = new TraceRange(start, end);
+                        this.additionalTraceRanges.Add(range);                    }
                 }
             }
         }
