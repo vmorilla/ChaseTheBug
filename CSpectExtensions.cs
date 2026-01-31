@@ -6,4 +6,5 @@ public static class iCSpectExtensions
     {
         return (ushort)(cspect.Peek(address) | (cspect.Peek((ushort)(address + 1)) << 8));
     }
+
 }
