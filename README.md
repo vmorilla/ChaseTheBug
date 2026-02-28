@@ -1,4 +1,6 @@
-# A CSpect plugin to facilitate capturing nasty bugs 
+# A CSpect plugin to facilitate solving nasty bugs 
+
+Alternative name: BugCrusher
 
 The plugin is meant to capture attempts to write in memory that is reserved for code.
 Currently, the plugin assumes the memory distribution used in Next Point:

@@ -93,6 +93,8 @@ namespace ChaseTheBug
         // Maximum function nesting level
         private int FnNestingLevel = 0;
 
+        private DateTime? firstLogTime = null;
+
         public List<sIO> Init(iCSpect c)
         {
             cspect = c;
@@ -473,7 +475,17 @@ namespace ChaseTheBug
 
         private void Log(string message)
         {
-            Console.WriteLine("[ChaseTheBug] " + message);
+            if (!firstLogTime.HasValue)
+                firstLogTime = DateTime.UtcNow;
+
+            var elapsed = DateTime.UtcNow - firstLogTime.Value;
+            var timestamp = string.Format("{0:00}:{1:00}:{2:00}.{3:000}",
+                (int)elapsed.TotalHours,
+                elapsed.Minutes,
+                elapsed.Seconds,
+                elapsed.Milliseconds);
+
+            Console.WriteLine($"[ChaseTheBug {timestamp}] {message}");
         }
 
         public void Tick() { }
